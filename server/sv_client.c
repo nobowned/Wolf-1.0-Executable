@@ -278,14 +278,9 @@ void SV_DirectConnect( netadr_t from ) {
 	// DHM - Nerve :: Update Server allows any protocol to connect
 #ifndef UPDATE_SERVER
 	version = atoi( Info_ValueForKey( userinfo, "protocol" ) );
-	if ( version != PROTOCOL_VERSION ) {
-		if ( version <= 59 ) {
-			// old clients, don't send them the [err_drop] tag
-			NET_OutOfBandPrint( NS_SERVER, from, "print\n" PROTOCOL_MISMATCH_ERROR );
-		} else {
-			NET_OutOfBandPrint( NS_SERVER, from, "print\n[err_prot]" PROTOCOL_MISMATCH_ERROR );
-		}
-		Com_DPrintf( "    rejected connect from version %i\n", version );
+	if (version != PROTOCOL_VERSION_1_POINT_0 && version != PROTOCOL_VERSION_1_POINT_4) {
+		NET_OutOfBandPrint(NS_SERVER, from, "print\n" PROTOCOL_MISMATCH_ERROR);
+		Com_DPrintf("    rejected connect from version %i\n", version);
 		return;
 	}
 #endif
@@ -438,6 +433,9 @@ gotnewcl:
 
 	// save the challenge
 	newcl->challenge = challenge;
+
+	// save version/protocol
+	newcl->protocol = version;
 
 	// save the address
 	Netchan_Setup( NS_SERVER, &newcl->netchan, from, qport );
@@ -1281,6 +1279,50 @@ static void SV_UpdateUserinfo_f( client_t *cl ) {
 	VM_Call( gvm, GAME_CLIENT_USERINFO_CHANGED, cl - svs.clients );
 }
 
+char *ProtocolToString(int protocol) {
+	switch (protocol) {
+	case PROTOCOL_VERSION_1_POINT_4:
+		return "1.4";
+	case PROTOCOL_VERSION_1_POINT_3:
+		return "!.3";
+	default:
+		return "1.0";
+	}
+}
+
+void PrintClientVersion(client_t *to, int version) {
+	int i;
+	int matchCount = 0;
+	client_t *cl;
+	int matches[MAX_CLIENTS];
+
+	for (i = 0; i < sv_maxclients->integer; ++i) {
+		cl = &svs.clients[i];
+
+		if (cl->state >= CS_CONNECTED && cl->protocol == version) {
+			matches[matchCount++] = i;
+		}
+	}
+
+	SV_SendServerCommand(to, "print \"\n^3%s clients (%d):\n\"", ProtocolToString(version), matchCount);
+
+	if (matchCount > 0) {
+		for (i = 0; i < matchCount; ++i) {
+			cl = &svs.clients[matches[i]];
+			SV_SendServerCommand(to, "print \"%s^7\n\"", cl->name);
+		}
+	}
+	else {
+		SV_SendServerCommand(to, "print \"None\n\"");
+	}
+}
+
+void SV_PrintClientVersions_f(client_t *cl) {
+	PrintClientVersion(cl, PROTOCOL_VERSION_1_POINT_0);
+	PrintClientVersion(cl, PROTOCOL_VERSION_1_POINT_4);
+	SV_SendServerCommand(NULL, "print \"\n\"");
+}
+
 typedef struct {
 	char    *name;
 	void ( *func )( client_t *cl );
@@ -1295,6 +1337,7 @@ static ucmd_t ucmds[] = {
 	{"nextdl", SV_NextDownload_f},
 	{"stopdl", SV_StopDownload_f},
 	{"donedl", SV_DoneDownload_f},
+	{"versions", SV_PrintClientVersions_f},
 	{NULL, NULL}
 };
 

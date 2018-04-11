@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
-#define Q3_VERSION      "rtcw(x) 1.0/x2" // L0 - Define custom version
+#define Q3_VERSION      "rtcw 1.x"
 // 1.41b-MP: fix autodl sploit
 // 1.4-MP : (== 1.34)
 // 1.3-MP : final for release

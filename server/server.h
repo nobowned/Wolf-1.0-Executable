@@ -177,6 +177,7 @@ typedef struct client_s {
 	clientSnapshot_t frames[PACKET_BACKUP];     // updates can be delta'd from here
 	int ping;
 	int rate;                           // bytes / second
+	int protocol;
 	int snapshotMsec;                   // requests a snapshot every snapshotMsec unless rate choked
 	int pureAuthentic;
 	qboolean gotCP;  // TTimo - additional flag to distinguish between a bad pure checksum, and no cp command at all
@@ -325,11 +326,6 @@ extern cvar_t  *sv_gameskill;
 
 // TTimo - autodl
 extern cvar_t  *sv_dl_maxRate;
-
-// L0 - our info cvars
-extern cvar_t	*project_developer;
-extern cvar_t	*project_url;
-extern cvar_t	*project_forums;
 
 #ifdef FEATURE_ANTICHEAT
 extern cvar_t *wh_active;

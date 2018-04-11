@@ -253,20 +253,23 @@ The server you attempted to join is running an incompatible version of the game.
 You or the server may be running older versions of the game. Press the auto-update\
  button if it appears on the Main Menu screen."
 
+#define PROTOCOL_VERSION_DEMO 50
+#define PROTOCOL_VERSION_1_POINT_0 57
+#define PROTOCOL_VERSION_1_POINT_3 59
+#define PROTOCOL_VERSION_1_POINT_4 60
+
 #ifndef PRE_RELEASE_DEMO
-// 1.33 - protocol 59
-// 1.4 - protocol 60
-#define PROTOCOL_VERSION 57	// L0 - dumbed it down to 1.0
+#define PROTOCOL_VERSION PROTOCOL_VERSION_1_POINT_0
 #define GAMENAME_STRING     "wolfmp"
 #else
 // the demo uses a different protocol version for independant browsing
-  #define   PROTOCOL_VERSION    50  // NERVE - SMF - wolfMP protocol version
+  #define   PROTOCOL_VERSION    PROTOCOL_VERSION_DEMO  // NERVE - SMF - wolfMP protocol version
 #endif
 
 // NERVE - SMF - wolf multiplayer master servers
-#define UPDATE_SERVER_NAME      "update.rtcwx.com"          // L0 - point to our update server
+#define UPDATE_SERVER_NAME      "update.rtcw.com"          // L0 - point to our update server
 #define MASTER_SERVER_NAME      "wolfmaster.s4ndmod.com"	// L0 - point to custom master server
-#define AUTHORIZE_SERVER_NAME   "authorize.rtcwx.com"		// L0 - point to our auth server..
+#define AUTHORIZE_SERVER_NAME   "authorize.rtcw.com"		// L0 - point to our auth server..
 
 // TTimo: allow override for easy dev/testing..
 // see cons -- update_server=myhost

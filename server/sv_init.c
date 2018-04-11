@@ -878,12 +878,6 @@ void SV_Init( void ) {
 	// ATVI Tracker Wolfenstein Misc #263
 	Cvar_Get( "g_antilag", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
 
-	// L0 our cvars
-	Cvar_Get( "project_developer", "Nate 'L0", CVAR_ROM | CVAR_SERVERINFO );
-	Cvar_Get( "project_url", "http://projects.rtcwx.com", CVAR_ROM | CVAR_SERVERINFO );
-	Cvar_Get( "project_forums", "http://rtcwx.com", CVAR_ROM | CVAR_SERVERINFO );
-	// end
-
 	// TTimo - autodownload speed tweaks
 #ifndef UPDATE_SERVER
 	// the download netcode tops at 18/20 kb/s, no need to make you think you can go above

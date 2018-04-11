@@ -77,12 +77,6 @@ cvar_t  *sv_gameskill;
 
 cvar_t  *sv_showAverageBPS;     // NERVE - SMF - net debugging
 
-// L0 our cvars
-// |-> Projects info
-cvar_t	*project_developer;
-cvar_t	*project_url;
-cvar_t	*project_forums;
-
 // Anti-Wallhack
 #ifdef FEATURE_ANTICHEAT
 cvar_t *wh_active;
@@ -577,7 +571,6 @@ void SVC_Info( netadr_t from ) {
 	// to prevent timed spoofed reply packets that add ghost servers
 	Info_SetValueForKey( infostring, "challenge", Cmd_Argv( 1 ) );
 
-	Info_SetValueForKey( infostring, "protocol", va( "%i", PROTOCOL_VERSION ) );
 	Info_SetValueForKey( infostring, "hostname", sv_hostname->string );
 	Info_SetValueForKey( infostring, "mapname", sv_mapname->string );
 	Info_SetValueForKey( infostring, "clients", va( "%i", count ) );
@@ -613,7 +606,13 @@ void SVC_Info( netadr_t from ) {
 		Info_SetValueForKey( infostring, "g_antilag", antilag );
 	}
 
+	// we want our server to show up in 1.0
+	Info_SetValueForKey(infostring, "protocol", va("%i", PROTOCOL_VERSION_1_POINT_0));
 	NET_OutOfBandPrint( NS_SERVER, from, "infoResponse\n%s", infostring );
+
+	// and 1.4
+	Info_SetValueForKey(infostring, "protocol", va("%i", PROTOCOL_VERSION_1_POINT_4));
+	NET_OutOfBandPrint(NS_SERVER, from, "infoResponse\n%s", infostring);
 }
 
 // DHM - Nerve

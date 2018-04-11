@@ -638,6 +638,12 @@ static void SV_BuildClientSnapshot( client_t *client ) {
 		ent = SV_GentityNum( entityNumbers.snapshotEntities[i] );
 		state = &svs.snapshotEntities[svs.nextSnapshotEntities % svs.numSnapshotEntities];
 		*state = ent->s;
+		// fix for 1.4 client event entities (G_TempEntity).
+		if (client->protocol == PROTOCOL_VERSION_1_POINT_4) {
+			if (state->eType > ET_EVENTS) {
+				state->eType += 4;
+			}
+		}
 #ifdef FEATURE_ANTICHEAT
 		if (wh_active->integer && entityNumbers.snapshotEntities[i] < sv_maxclients->integer)
 		{
